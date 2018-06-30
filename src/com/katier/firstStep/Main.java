@@ -5,13 +5,33 @@ import java.awt.*;
 
 public class Main extends JFrame {
     private Graph graph = new Graph(new int[0][0]);
-    private MatrixPanel panelForMatr = new MatrixPanel();
-    private DraggedPanel panel = new DraggedPanel(graph);
+    private final MatrixPanel panelForMatr = new MatrixPanel();
+    private final DraggedPanel panel = new DraggedPanel();
 
     private Main() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        panel.setLayout(null);
-        add(panel);
+
+        initMenu();
+
+        setLayout(new BorderLayout());
+        panel.setPreferredSize(new Dimension(600, 700));
+        add(panel, BorderLayout.WEST);
+
+        initMatrix();
+
+        setSize(1200, 700);
+        setVisible(true);
+    }
+
+    private void initMatrix(){
+        JPanel tmp = new JPanel();
+        tmp.setPreferredSize(new Dimension(400, 700));
+        tmp.setBackground(Color.WHITE);
+        tmp.add(panelForMatr);
+        add(tmp, BorderLayout.EAST);
+    }
+
+    private void initMenu(){
         JMenuBar jToolBar = new JMenuBar();
         JMenu modifyTree = new JMenu("Modify tree");
         JMenuItem newTree = new JMenuItem("New Tree");
@@ -46,26 +66,13 @@ public class Main extends JFrame {
         modifyTree.add(newTree);
         modifyTree.add(addEdges);
         modifyTree.add(moveVert);
-        this.setJMenuBar(jToolBar);
-        setLayout(new BorderLayout());
-        JPanel tmp = new JPanel();
-        tmp.setPreferredSize(new Dimension(400, 700));
-        tmp.setBackground(Color.WHITE);
-        tmp.add(panelForMatr);
-        add(tmp, BorderLayout.EAST);
-        setSize(1200, 700);
-        setVisible(true);
-
+        setJMenuBar(jToolBar);
     }
 
-
     private void addVertexesInPanel(int vertexes) {
-        remove(panel);
         graph = new Graph(new int[vertexes][vertexes]);
-        panel = new DraggedPanel(graph);
-        panelForMatr.newGraph(graph);
-        panel.setPreferredSize(new Dimension(600, 700));
-        add(panel, BorderLayout.WEST);
+        panel.setGraph(graph);
+        panelForMatr.setGraph(graph);
         panel.setEdgeListener((i, j) -> {
             Integer weight = New.ask(1, 99, "Choose weight of edge");
             if (weight == null) return;

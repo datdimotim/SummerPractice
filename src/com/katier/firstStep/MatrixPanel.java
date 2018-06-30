@@ -12,7 +12,7 @@ public class MatrixPanel extends JPanel {
         setLayout(new GridLayout(2, 2));
         setBackground(Color.WHITE);
     }
-    public void newGraph(Graph graph) {
+    public void setGraph(Graph graph) {
         this.graph=graph;
         graph.addChangeListeners(v->onUpdate());
         int kol= graph.getV();

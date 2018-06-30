@@ -7,18 +7,25 @@ import java.util.function.BiConsumer;
 
 public class DraggedPanel extends JPanel {
     public static final int SIZE_OF_BUTTON=50;
-    private final DraggedButton[] buttons;
+    private DraggedButton[] buttons;
     private final int[] line={0,0,0,0};
     private boolean needDraw=false;
     private boolean fixed=false;
     private BiConsumer<Integer,Integer> edgeListener=null;
-    private final Graph graph;
+    private Graph graph=new Graph(new int[0][0]);
 
-    public DraggedPanel(Graph graph){
-        this.graph=graph;
-        graph.addChangeListeners((v)->updateUI());
+    public DraggedPanel(){
         setBackground(Color.WHITE);
         setLayout(null);
+    }
+
+    public void setGraph(Graph graph){
+        removeAll();
+        fixed=false;
+        needDraw=false;
+        this.graph=graph;
+        graph.addChangeListeners((v)->updateUI());
+
         ComponentListener buttonMoveListener=new ComponentAdapter(){
             @Override
             public void componentMoved(ComponentEvent e) {
