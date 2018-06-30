@@ -116,6 +116,10 @@ public class DraggedPanel extends JPanel {
                 if(graph.getEdgeWeigth(i,j)==0)continue;
                 DraggedButton a=buttons[i];
                 DraggedButton b=buttons[j];
+                if(graph.getEdgeWeigth(j,i)==0){
+                    drawStrelka(g,new Point(a.getCenter().x,a.getCenter().y),
+                            new Point(b.getCenter().x,b.getCenter().y),graph.getEdgeWeigth(i,j));
+                } else
                 if(graph.getEdgeWeigth(j,i)<graph.getEdgeWeigth(i,j) || (graph.getEdgeWeigth(j,i)==graph.getEdgeWeigth(i,j) &&i>j)){
                     if(Math.abs((b.getCenter().y)-a.getCenter().y)< SIZE_OF_BUTTON/2){
                         drawStrelka(g,new Point(a.getCenter().x+SIZE_OF_BUTTON/2,a.getCenter().y+SIZE_OF_BUTTON/6),

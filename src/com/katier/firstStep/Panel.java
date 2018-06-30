@@ -7,6 +7,7 @@ import java.util.List;
 
 public class Panel extends JFrame{
     Graph graph=new Graph(new int[0][0]);
+    JPanel panelForMatr = new JPanel();
     List<DraggedButton> verts = new ArrayList<>();
     DraggedPanel panel = new DraggedPanel(graph);
     Panel(){
@@ -60,15 +61,45 @@ public class Panel extends JFrame{
         modifyTree.add(addEdges);
         modifyTree.add(moveVert);
         this.setJMenuBar(jToolBar);
-        setSize(500,500);
+        setLayout(new BorderLayout());
+        panelForMatr.setBackground(Color.WHITE);
+        panelForMatr.setPreferredSize(new Dimension(600,700));
+
+        //
+            panelForMatr.setLayout(new GridLayout(2,2));
+
+
+        //
+        JPanel tmp=new JPanel();
+        tmp.setPreferredSize(new Dimension(400,700));
+        tmp.setBackground(Color.WHITE);
+        tmp.add(panelForMatr);
+        panelForMatr.setBackground(Color.WHITE);
+        add(tmp,BorderLayout.EAST) ;
+        setSize(1200,700);
         setVisible(true);
 
     }
+    void setMatr(int kol){
+        panelForMatr.removeAll();
+        panelForMatr.setPreferredSize(new Dimension(30*kol,30*kol));
+        panelForMatr.setLayout(new GridLayout(kol,kol));
+        for(int i=0;i<kol*kol;i++){
+            JLabel l = new JLabel("X");
+            l.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+            l.setVerticalAlignment(SwingConstants.CENTER);
+            l.setHorizontalAlignment(SwingConstants.CENTER);
+            panelForMatr.add(l);
+        }
+    }
+
     void addVertexesInArray(int vertexes){
         remove(panel);
+        setMatr(vertexes);
         graph=new Graph(new int[vertexes][vertexes]);
         panel=new DraggedPanel(graph);
-        add(panel);
+        panel.setPreferredSize(new Dimension(600,700));
+        add(panel,BorderLayout.WEST);
         panel.addEdgeAddListener((i,j)->{
             Integer weight=New.ask(1,10000,"Choose weight of edge");
             if(weight==null) {
