@@ -58,3 +58,10 @@ public class Graph implements Cloneable{
         return matrix[from][to];
     }
 }
+enum EdgeState{
+    NORMAL,SELECTED,WIN,LOSE
+}
+
+enum VertexState{
+    NORMAL,ACTIVE,PROCESSED,NEIGHBOR
+}

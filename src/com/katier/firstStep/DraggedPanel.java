@@ -106,9 +106,32 @@ public class DraggedPanel extends JPanel {
         DraggedButton b = buttons[i];
         if(i<6)b.setBounds(i*70+50,50,50,50);
         else b.setBounds((i-6)*70+50,150,50,50);
-// b.setEnabled(false);
     }
+    Point [] getPath(int i,int j) {
+        DraggedButton a=buttons[i];
+        DraggedButton b=buttons[j];
 
+        if(graph.getEdgeWeigth(j,i)==0){
+          return new Point[]{new Point(a.getCenter().x,a.getCenter().y),
+                    new Point(b.getCenter().x,b.getCenter().y)};
+        } else
+        if(graph.getEdgeWeigth(j,i)<graph.getEdgeWeigth(i,j) || (graph.getEdgeWeigth(j,i)==graph.getEdgeWeigth(i,j) &&i>j)){
+            if(Math.abs((b.getCenter().y)-a.getCenter().y)< SIZE_OF_BUTTON/2){
+                return new Point[] {new Point(a.getCenter().x+SIZE_OF_BUTTON/2,a.getCenter().y+SIZE_OF_BUTTON/6),
+                        new Point(b.getCenter().x+SIZE_OF_BUTTON/2,b.getCenter().y+SIZE_OF_BUTTON/6)};
+            } else
+                return new Point[]{new Point(a.getCenter().x+SIZE_OF_BUTTON/2,a.getCenter().y),
+                        new Point(b.getCenter().x+SIZE_OF_BUTTON/2,b.getCenter().y)};
+        }
+        else {
+            if(Math.abs(b.getCenter().y-a.getCenter().y)< SIZE_OF_BUTTON/2){
+                return new Point[] {new Point(a.getCenter().x-SIZE_OF_BUTTON/2,a.getCenter().y-SIZE_OF_BUTTON/6),
+                        new Point(b.getCenter().x-SIZE_OF_BUTTON/2,b.getCenter().y-SIZE_OF_BUTTON/6)};
+            } else
+               return new Point[] {new Point(a.getCenter().x - SIZE_OF_BUTTON / 2, a.getCenter().y),
+                        new Point(b.getCenter().x - SIZE_OF_BUTTON / 2, b.getCenter().y )};
+        }
+    }
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -116,30 +139,10 @@ public class DraggedPanel extends JPanel {
         for(int i=0;i<graph.getV();i++){
             for(int j=0;j<graph.getV();j++){
                 if(graph.getEdgeWeigth(i,j)==0)continue;
-                DraggedButton a=buttons[i];
-                DraggedButton b=buttons[j];
-                if(graph.getEdgeWeigth(j,i)==0){
-                    drawStrelka(g,new Point(a.getCenter().x,a.getCenter().y),
-                            new Point(b.getCenter().x,b.getCenter().y),graph.getEdgeWeigth(i,j));
-                } else
-                if(graph.getEdgeWeigth(j,i)<graph.getEdgeWeigth(i,j) || (graph.getEdgeWeigth(j,i)==graph.getEdgeWeigth(i,j) &&i>j)){
-                    if(Math.abs((b.getCenter().y)-a.getCenter().y)< SIZE_OF_BUTTON/2){
-                        drawStrelka(g,new Point(a.getCenter().x+SIZE_OF_BUTTON/2,a.getCenter().y+SIZE_OF_BUTTON/6),
-                                new Point(b.getCenter().x+SIZE_OF_BUTTON/2,b.getCenter().y+SIZE_OF_BUTTON/6),graph.getEdgeWeigth(i,j));
-                    } else
-                    drawStrelka(g,new Point(a.getCenter().x+SIZE_OF_BUTTON/2,a.getCenter().y),
-                            new Point(b.getCenter().x+SIZE_OF_BUTTON/2,b.getCenter().y),graph.getEdgeWeigth(i,j));
-                }
-                else {
-                    if(Math.abs(b.getCenter().y-a.getCenter().y)< SIZE_OF_BUTTON/2){
-                        drawStrelka(g,new Point(a.getCenter().x-SIZE_OF_BUTTON/2,a.getCenter().y-SIZE_OF_BUTTON/6),
-                                new Point(b.getCenter().x-SIZE_OF_BUTTON/2,b.getCenter().y-SIZE_OF_BUTTON/6),graph.getEdgeWeigth(i,j));
-                    } else
-                    drawStrelka(g, new Point(a.getCenter().x - SIZE_OF_BUTTON / 2, a.getCenter().y),
-                            new Point(b.getCenter().x - SIZE_OF_BUTTON / 2, b.getCenter().y ), graph.getEdgeWeigth(i,j));
-                }
-                }
+                Point [] points = getPath(i,j);
+                drawStrelka(g,points[0],points[1],graph.getEdgeWeigth(i,j));
             }
+        }
 
         if(!needDraw)return;
         drawStrelka(g,new Point(line[0],line[1]),new Point(line[2],line[3]),null);

@@ -2,80 +2,120 @@ package com.katier.firstStep;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
-public class Main {
+public class Main extends JFrame {
+    private Graph graph = new Graph(new int[0][0]);
+    private JPanel panelForMatr = new JPanel();
+    private JLabel[][] labels;
+    private DraggedPanel panel = new DraggedPanel(graph);
 
-    public static void main(String[] args) {
-        new Pane();
-    }
-}
-
-class Pane extends JFrame{
-    boolean state = true;
-    int cx,cy;
-    boolean flag ;
-    JPanel panel = new JPanel();
-    Pane(){
+    Main() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500,500);
-        setVisible(true);
         panel.setLayout(null);
         add(panel);
-        setButtons();
+        JMenuBar jToolBar = new JMenuBar();
+        JMenu modifyTree = new JMenu("Modify tree");
+        JMenuItem newTree = new JMenuItem("New Tree");
+        JMenuItem addEdges = new JMenuItem("Add Edges");
+        JMenuItem moveVert = new JMenuItem("Move Vertexes");
+        newTree.addActionListener(actionEvent -> {
+            Integer k = New.ask(2, 12, "Choose number of vertexes");
+            if (k == null) return;
+            int vertexes = k;
+            addVertexesInPanel(vertexes);
+        });
+        moveVert.addActionListener(actionEvent -> {
+            panel.fixButtons(false);
+        });
+        addEdges.addActionListener(actionEvent -> {
+            panel.fixButtons(true);
+        });
+        JMenu solvetion = new JMenu("Solution");
+        JMenuItem solve = new JMenuItem("Solve");
+        JMenuItem next = new JMenuItem("Next");
+        JMenuItem back = new JMenuItem("Back");
+        solve.addActionListener(actionEvent -> {
+            //floyd-warshall
+        });
+        next.addActionListener(actionEvent -> {
+            //next in Array
+        });
+        back.addActionListener(actionEvent -> {
+            //back in Array
+        });
+        solvetion.add(solve);
+        solvetion.add(next);
+        solvetion.add(back);
+        jToolBar.add(modifyTree);
+        jToolBar.add(solvetion);
+        modifyTree.add(newTree);
+        modifyTree.add(addEdges);
+        modifyTree.add(moveVert);
+        this.setJMenuBar(jToolBar);
+        setLayout(new BorderLayout());
+        panelForMatr.setBackground(Color.WHITE);
+        panelForMatr.setPreferredSize(new Dimension(600, 700));
+        panelForMatr.setLayout(new GridLayout(2, 2));
+        JPanel tmp = new JPanel();
+        tmp.setPreferredSize(new Dimension(400, 700));
+        tmp.setBackground(Color.WHITE);
+        tmp.add(panelForMatr);
+        panelForMatr.setBackground(Color.WHITE);
+        add(tmp, BorderLayout.EAST);
+        setSize(1200, 700);
+        setVisible(true);
+
     }
-    void setButtons(){
-        JButton b = new JButton();
-        b.setFocusable(false);
-        b.setBackground(Color.BLUE);
-        b.setBounds(185,75,50,50);
-        b.setBorderPainted(false);
-        b.setFocusPainted(false);
-        b.setEnabled(false);
-        b.addMouseMotionListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                cx = e.getX();
-                cy= e.getY();
-                flag=true;
-            }
 
-            @Override
-            public void mouseReleased(MouseEvent mouseEvent) {
-                flag=false;
-            }
+    private void setMatr(int kol) {
+        labels = new JLabel[kol][kol];
+        panelForMatr.removeAll();
+        panelForMatr.setPreferredSize(new Dimension(30 * (kol + 1), 30 * (kol + 1)));
+        panelForMatr.setLayout(new GridLayout(kol + 1, kol + 1));
+        panelForMatr.add(new JLabel(""));
+        for (int i = 0; i < kol; i++) {
+            char[] c = {(char) (i + 'A')};
+            JLabel l = new JLabel(new String(c));
+            l.setVerticalAlignment(SwingConstants.CENTER);
+            l.setHorizontalAlignment(SwingConstants.CENTER);
+            panelForMatr.add(l);
+        }
+        for (int i = 0; i < kol; i++) {
 
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                //if(!flag)return;
-                int dx = e.getX() - cx;
-                int dy = e.getY()-cy;
-                b.setBounds(b.getX()+dx,b.getY()+dy,50,50);
-                //panel.updateUI();
+            char[] c = {(char) (i + 'A')};
+            JLabel k = new JLabel(new String(c));
+            k.setVerticalAlignment(SwingConstants.CENTER);
+            k.setHorizontalAlignment(SwingConstants.CENTER);
+            panelForMatr.add(k);
+
+            for (int j = 0; j < kol; j++) {
+                JLabel l = new JLabel("X");
+                l.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+                l.setVerticalAlignment(SwingConstants.CENTER);
+                l.setHorizontalAlignment(SwingConstants.CENTER);
+                labels[i][j] = l;
+                panelForMatr.add(l);
             }
+        }
+    }
+
+    private void addVertexesInPanel(int vertexes) {
+        remove(panel);
+        setMatr(vertexes);
+        graph = new Graph(new int[vertexes][vertexes]);
+        panel = new DraggedPanel(graph);
+        panel.setPreferredSize(new Dimension(600, 700));
+        add(panel, BorderLayout.WEST);
+        panel.addEdgeAddListener((i, j) -> {
+            Integer weight = New.ask(1, 10000, "Choose weight of edge");
+            if (weight == null) return;
+            graph.setEggeWeight(i, j, weight);
+            labels[i][j].setText(weight.toString());
         });
-        panel.add(b);
-        panel.addMouseMotionListener(new MouseAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                //if(b.hasFocus())
-                //b.setBounds(e.getX(),e.getY(),50,50);
-                //panel.updateUI();
-            }
-        });
-        JButton g = new JButton();
-        g.setBounds(0,0,50,50);
-        g.addActionListener(actionEvent -> {
-            if(state==true){
-                b.setBounds(300,300,200,200);
-                state=false;
-            }
-            else {
-                b.setBounds(185,75,85,30);
-                state=true;
-            }
-        });
-        panel.add(g);
+    }
+
+    public static void main(String[] args) {
+        new Main();
     }
 }
+
