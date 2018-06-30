@@ -18,7 +18,7 @@ public class New extends JDialog {
 
     private boolean canceled =false;
 
-    public New(int minFigure,int maxFigure,String warn) {
+    private New(int minFigure,int maxFigure,String warn) {
         this.minFigure = minFigure;
         this.maxFigure = maxFigure;
         warnLable.setText(warn);

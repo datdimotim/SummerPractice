@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class MatrixPanel extends JPanel {
     private JLabel[][] labels;
-    Graph graph;
+    private Graph graph;
     MatrixPanel(){
         setBackground(Color.WHITE);
         setPreferredSize(new Dimension(600, 700));
@@ -47,11 +47,11 @@ public class MatrixPanel extends JPanel {
         }
         onUpdate();
     }
-    void onUpdate(){
+    private void onUpdate(){
         for (int i = 0; i < graph.getV(); i++)
             for (int j = 0; j < graph.getV(); j++) {
                 if(0 == graph.getEdgeWeigth(i,j)) continue;
-                labels[i][j].setText(new Integer(graph.getEdgeWeigth(i,j)).toString());
+                labels[i][j].setText(Integer.toString(graph.getEdgeWeigth(i, j)));
             }
         }
     }

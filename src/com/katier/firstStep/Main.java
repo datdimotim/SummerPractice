@@ -8,8 +8,8 @@ public class Main extends JFrame {
     private MatrixPanel panelForMatr = new MatrixPanel();
     private DraggedPanel panel = new DraggedPanel(graph);
 
-    Main() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    private Main() {
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         panel.setLayout(null);
         add(panel);
         JMenuBar jToolBar = new JMenuBar();
@@ -23,12 +23,8 @@ public class Main extends JFrame {
             int vertexes = k;
             addVertexesInPanel(vertexes);
         });
-        moveVert.addActionListener(actionEvent -> {
-            panel.fixButtons(false);
-        });
-        addEdges.addActionListener(actionEvent -> {
-            panel.fixButtons(true);
-        });
+        moveVert.addActionListener(actionEvent -> panel.fixButtons(false));
+        addEdges.addActionListener(actionEvent -> panel.fixButtons(true));
         JMenu solvetion = new JMenu("Solution");
         JMenuItem solve = new JMenuItem("Solve");
         JMenuItem next = new JMenuItem("Next");

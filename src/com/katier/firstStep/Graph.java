@@ -30,8 +30,7 @@ public class Graph implements Cloneable{
     }
 
     public void addChangeListeners(Consumer<Void> changeListeners){
-        if(changeListeners ==null) return;
-        else this.changeListeners.add(changeListeners);
+        if (changeListeners != null) this.changeListeners.add(changeListeners);
     }
 
     public void setEdgeState(int from, int to, EdgeState state){

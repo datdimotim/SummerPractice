@@ -106,7 +106,7 @@ public class DraggedPanel extends JPanel {
         if(i<6)b.setBounds(i*70+50,50,50,50);
         else b.setBounds((i-6)*70+50,150,50,50);
     }
-    Point [] getPath(int i,int j) {
+    private Point [] getPath(int i,int j) {
         DraggedButton a=buttons[i];
         DraggedButton b=buttons[j];
 
@@ -149,7 +149,7 @@ public class DraggedPanel extends JPanel {
 
 
 
-    void drawStrelka(Graphics g, Point start, Point finish, Integer weight){
+    private void drawStrelka(Graphics g, Point start, Point finish, Integer weight){
         if(start.equals(finish))return;
         g.setColor(Color.GREEN);
         g.drawLine(start.x,start.y,finish.x,finish.y);
