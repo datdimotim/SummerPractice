@@ -1,7 +1,11 @@
 package com.katier.firstStep;
 
+import com.sun.istack.internal.NotNull;
+
 import javax.swing.*;
-import java.util.ArrayList;
+import java.util.function.Consumer;
+
+import static com.katier.firstStep.Utils.*;
 
 public class MainWindow extends JFrame{
 
@@ -18,28 +22,29 @@ public class MainWindow extends JFrame{
 
     private void initUI() {
 
-        DraggedPanel draggedPanel=new DraggedPanel(new int[][]{
+        DraggedPanel draggedPanel=new DraggedPanel(new Graph(new int[][]{
                                                                 {0,1,0,0},
                                                                 {1,0,1,1},
                                                                 {1,0,0,1},
                                                                 {0,1,1,1}
-        });
+        }));
         add(draggedPanel);
     }
 }
 
-class GraphView{
-    VertexAttr[] vertexAttrs;
-    static class VertexAttr{
-        boolean isVisited;
-        boolean isCurrent;
+enum EdgeState{
+    NORMAL,SELECTED,WIN,LOSE
+}
+
+enum VertexState{
+    NORMAL,ACTIVE,PROCESSED,NEIGHBOR
+}
+
+
+class Utils{
+    public static int[][] deepCopy(int[][] m){
+        int[][] r=new int[m.length][];
+        for(int i=0;i<m.length;i++)r[i]=m[i].clone();
+        return r;
     }
-}
-
-class GraphInput{
-    int[][] matrix;
-}
-
-interface Deicstra{
-    ArrayList<GraphView> deicstra(GraphInput graphInput, int startPoint);
 }

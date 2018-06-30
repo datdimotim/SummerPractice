@@ -5,22 +5,25 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.function.BiConsumer;
 
+import static com.katier.firstStep.Utils.deepCopy;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 public class DraggedPanel extends JPanel {
     public static final int SIZE_OF_BUTTON=50;
-    private final int[][] matrix;
     private final DraggedButton[] buttons;
     private final int[] line={0,0,0,0};
     private boolean needDraw=false;
     private boolean fixed=false;
 
-    public DraggedPanel(int[][] matrix){
-        this.matrix=deepCopy(matrix);
-        buttons=new DraggedButton[matrix.length];
+    private final Graph graph;
 
- //setBackground(new Color(1023));
+    public DraggedPanel(Graph graph){
+        this.graph=graph;
+        buttons=new DraggedButton[graph.getV()];
+        graph.setChangeListener((v)->updateUI());
+
+        //setBackground(new Color(1023));
         setLayout(null);
 
         ComponentListener buttonMoveListener=new ComponentAdapter(){
@@ -30,16 +33,12 @@ public class DraggedPanel extends JPanel {
             }
         };
 
-        for(int i=0;i<matrix.length;i++){
+        for(int i=0;i<graph.getV();i++){
             buttons[i]=new DraggedButton();
             buttons[i].addComponentListener(buttonMoveListener);
             setBoundsToButtons(i);
             add(buttons[i]);
         }
-    }
-    public void updateMatrix(int i ,int j,int val){
-        matrix[i][j] = val;
-        updateUI();
     }
 
     public void fixButtons(boolean isFixed){
@@ -50,7 +49,7 @@ public class DraggedPanel extends JPanel {
     public void addEdgeAddListener(BiConsumer<Integer,Integer> listener){
         final int[] dowend = {-1};
         final int[] entered = {-1};
-        for(int i=0;i<matrix.length;i++){
+        for(int i=0;i<graph.getV();i++){
             final int ii=i;
             buttons[i].addMouseListener(new MouseAdapter() {
                 @Override
@@ -108,35 +107,30 @@ public class DraggedPanel extends JPanel {
 // b.setEnabled(false);
     }
 
-    private static int[][] deepCopy(int[][] m){
-        int[][] r=new int[m.length][];
-        for(int i=0;i<m.length;i++)r[i]=m[i].clone();
-        return r;
-    }
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        for(int i=0;i<matrix.length;i++){
-            for(int j=0;j<matrix.length;j++){
-                if(matrix[i][j]==0)continue;
+        for(int i=0;i<graph.getV();i++){
+            for(int j=0;j<graph.getV();j++){
+                if(graph.getEdgeWeigth(i,j)==0)continue;
                 DraggedButton a=buttons[i];
                 DraggedButton b=buttons[j];
-                if(matrix[j][i]<matrix[i][j] || (matrix[j][i]==matrix[i][j] &&i>j)){
+                if(graph.getEdgeWeigth(j,i)<graph.getEdgeWeigth(i,j) || (graph.getEdgeWeigth(j,i)==graph.getEdgeWeigth(i,j) &&i>j)){
                     if(Math.abs((b.getCenter().y)-a.getCenter().y)< SIZE_OF_BUTTON/2){
                         drawStrelka(g,new Point(a.getCenter().x+SIZE_OF_BUTTON/2,a.getCenter().y+SIZE_OF_BUTTON/6),
-                                new Point(b.getCenter().x+SIZE_OF_BUTTON/2,b.getCenter().y+SIZE_OF_BUTTON/6),matrix[i][j]);
+                                new Point(b.getCenter().x+SIZE_OF_BUTTON/2,b.getCenter().y+SIZE_OF_BUTTON/6),graph.getEdgeWeigth(i,j));
                     } else
                     drawStrelka(g,new Point(a.getCenter().x+SIZE_OF_BUTTON/2,a.getCenter().y),
-                            new Point(b.getCenter().x+SIZE_OF_BUTTON/2,b.getCenter().y),matrix[i][j]);
+                            new Point(b.getCenter().x+SIZE_OF_BUTTON/2,b.getCenter().y),graph.getEdgeWeigth(i,j));
                 }
                 else {
                     if(Math.abs(b.getCenter().y-a.getCenter().y)< SIZE_OF_BUTTON/2){
                         drawStrelka(g,new Point(a.getCenter().x-SIZE_OF_BUTTON/2,a.getCenter().y-SIZE_OF_BUTTON/6),
-                                new Point(b.getCenter().x-SIZE_OF_BUTTON/2,b.getCenter().y-SIZE_OF_BUTTON/6),matrix[i][j]);
+                                new Point(b.getCenter().x-SIZE_OF_BUTTON/2,b.getCenter().y-SIZE_OF_BUTTON/6),graph.getEdgeWeigth(i,j));
                     } else
                     drawStrelka(g, new Point(a.getCenter().x - SIZE_OF_BUTTON / 2, a.getCenter().y),
-                            new Point(b.getCenter().x - SIZE_OF_BUTTON / 2, b.getCenter().y ), matrix[i][j]);
+                            new Point(b.getCenter().x - SIZE_OF_BUTTON / 2, b.getCenter().y ), graph.getEdgeWeigth(i,j));
                 }
                 }
             }

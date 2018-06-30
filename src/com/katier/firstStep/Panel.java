@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Panel extends JFrame{
+    Graph graph=new Graph(new int[0][0]);
     List<DraggedButton> verts = new ArrayList<>();
-    DraggedPanel panel = new DraggedPanel(new int[0][0]);
+    DraggedPanel panel = new DraggedPanel(graph);
     Panel(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         panel.setLayout(null);
@@ -65,7 +66,8 @@ public class Panel extends JFrame{
     }
     void addVertexesInArray(int vertexes){
         remove(panel);
-        panel=new DraggedPanel(new int[vertexes][vertexes]);
+        graph=new Graph(new int[vertexes][vertexes]);
+        panel=new DraggedPanel(graph);
         add(panel);
         panel.addEdgeAddListener((i,j)->{
             Integer weight=New.ask(1,10000,"Choose weight of edge");
@@ -73,7 +75,7 @@ public class Panel extends JFrame{
                 //panel.updateUI();
                 return;
             }
-            panel.updateMatrix(i,j,weight);
+            graph.setEggeWeight(i,j,weight);
         });
     }
     void addVertexesInPanel(){
