@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.function.BiConsumer;
 
-import static com.katier.firstStep.Utils.deepCopy;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
@@ -21,7 +20,7 @@ public class DraggedPanel extends JPanel {
     public DraggedPanel(Graph graph){
         this.graph=graph;
         buttons=new DraggedButton[graph.getV()];
-        graph.setChangeListener((v)->updateUI());
+        graph.addChangeListeners((v)->updateUI());
 
         //setBackground(new Color(1023));
         setLayout(null);

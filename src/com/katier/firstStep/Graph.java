@@ -2,6 +2,7 @@ package com.katier.firstStep;
 
 import com.sun.istack.internal.NotNull;
 
+import java.util.ArrayList;
 import java.util.function.Consumer;
 
 import static com.katier.firstStep.Utils.deepCopy;
@@ -11,7 +12,8 @@ public class Graph implements Cloneable{
     private final EdgeState[][] edges;
     private final VertexState[] vertexes;
     private final int[][] matrix;
-    private @NotNull Consumer<Void> changeListener=(v)->{};
+    private @NotNull
+    ArrayList< Consumer<Void>> changeListeners =new ArrayList<>();
     public Graph(int[][] mat) {
         edges=new EdgeState[mat.length][mat.length];
         for(int i=0;i<mat.length;i++)
@@ -27,14 +29,14 @@ public class Graph implements Cloneable{
         return V;
     }
 
-    public void setChangeListener(Consumer<Void> changeListener){
-        if(changeListener==null)this.changeListener=(v)->{};
-        else this.changeListener=changeListener;
+    public void addChangeListeners(Consumer<Void> changeListeners){
+        if(changeListeners ==null) return;
+        else this.changeListeners.add(changeListeners);
     }
 
     public void setEdgeState(int from, int to, EdgeState state){
         edges[from][to]=state;
-        changeListener.accept(null);
+        for(Consumer<Void> cl: changeListeners) cl.accept(null);
     }
 
     public EdgeState getEdgeState(int from, int to){
@@ -43,7 +45,7 @@ public class Graph implements Cloneable{
 
     public void setVertexState(int i, VertexState state){
         vertexes[i]=state;
-        changeListener.accept(null);
+        for(Consumer<Void> cl: changeListeners) cl.accept(null);
     }
 
     public VertexState getVertexState(int i){
@@ -51,7 +53,7 @@ public class Graph implements Cloneable{
     }
     public void setEggeWeight(int from, int to, int weight){
         matrix[from][to]=weight;
-        changeListener.accept(null);
+        for(Consumer<Void> cl: changeListeners) cl.accept(null);
     }
 
     public int getEdgeWeigth(int from, int to){
