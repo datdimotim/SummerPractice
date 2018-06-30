@@ -84,16 +84,32 @@ public class Panel extends JFrame{
     void setMatr(int kol){
         labels = new JLabel[kol][kol];
         panelForMatr.removeAll();
-        panelForMatr.setPreferredSize(new Dimension(30*kol,30*kol));
-        panelForMatr.setLayout(new GridLayout(kol,kol));
-        for (int i = 0; i < kol; i++)
-        for(int j=0;j<kol;j++){
-            JLabel l = new JLabel("X");
-            l.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+        panelForMatr.setPreferredSize(new Dimension(30*(kol+1),30*(kol+1)));
+        panelForMatr.setLayout(new GridLayout(kol+1,kol+1));
+        panelForMatr.add(new JLabel(""));
+        for (int i = 0;i<kol;i++) {
+            char[] c={(char) (i+'A')};
+            JLabel l = new JLabel(new String(c));
             l.setVerticalAlignment(SwingConstants.CENTER);
             l.setHorizontalAlignment(SwingConstants.CENTER);
-            labels[i][j]=l;
             panelForMatr.add(l);
+        }
+        for (int i = 0; i < kol; i++) {
+
+            char[] c={(char) (i+'A')};
+            JLabel k = new JLabel(new String(c));
+            k.setVerticalAlignment(SwingConstants.CENTER);
+            k.setHorizontalAlignment(SwingConstants.CENTER);
+            panelForMatr.add(k);
+
+            for (int j = 0; j < kol; j++) {
+                JLabel l = new JLabel("X");
+                l.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+                l.setVerticalAlignment(SwingConstants.CENTER);
+                l.setHorizontalAlignment(SwingConstants.CENTER);
+                labels[i][j] = l;
+                panelForMatr.add(l);
+            }
         }
     }
 
