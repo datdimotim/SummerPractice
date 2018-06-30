@@ -37,6 +37,8 @@ public class DraggedPanel extends JPanel {
             buttons[i]=new DraggedButton();
             buttons[i].addComponentListener(buttonMoveListener);
             setBoundsToButtons(i);
+            char[] c={(char) (i+'A')};
+            buttons[i].setText(new String(c));
             add(buttons[i]);
         }
     }

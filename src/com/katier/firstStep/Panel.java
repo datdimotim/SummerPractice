@@ -9,6 +9,7 @@ public class Panel extends JFrame{
     Graph graph=new Graph(new int[0][0]);
     JPanel panelForMatr = new JPanel();
     List<DraggedButton> verts = new ArrayList<>();
+    JLabel[][] labels;
     DraggedPanel panel = new DraggedPanel(graph);
     Panel(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -81,14 +82,17 @@ public class Panel extends JFrame{
 
     }
     void setMatr(int kol){
+        labels = new JLabel[kol][kol];
         panelForMatr.removeAll();
         panelForMatr.setPreferredSize(new Dimension(30*kol,30*kol));
         panelForMatr.setLayout(new GridLayout(kol,kol));
-        for(int i=0;i<kol*kol;i++){
+        for (int i = 0; i < kol; i++)
+        for(int j=0;j<kol;j++){
             JLabel l = new JLabel("X");
             l.setBorder(BorderFactory.createLineBorder(Color.BLUE));
             l.setVerticalAlignment(SwingConstants.CENTER);
             l.setHorizontalAlignment(SwingConstants.CENTER);
+            labels[i][j]=l;
             panelForMatr.add(l);
         }
     }
@@ -107,6 +111,7 @@ public class Panel extends JFrame{
                 return;
             }
             graph.setEggeWeight(i,j,weight);
+            labels[i][j].setText(weight.toString());
         });
     }
     void addVertexesInPanel(){

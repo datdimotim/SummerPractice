@@ -12,7 +12,7 @@ public class DraggedButton extends JButton {
         MouseListener mouseListener=new MouseListener();
         addMouseMotionListener(mouseListener);
         addMouseListener(mouseListener);
-
+        setFocusPainted(false);
         setBackground(Color.orange);
         setContentAreaFilled(false);
     }
