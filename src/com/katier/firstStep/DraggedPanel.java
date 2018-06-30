@@ -5,26 +5,20 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.function.BiConsumer;
 
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
-
 public class DraggedPanel extends JPanel {
     public static final int SIZE_OF_BUTTON=50;
     private final DraggedButton[] buttons;
     private final int[] line={0,0,0,0};
     private boolean needDraw=false;
     private boolean fixed=false;
-
+    private BiConsumer<Integer,Integer> edgeListener=null;
     private final Graph graph;
 
     public DraggedPanel(Graph graph){
         this.graph=graph;
-        buttons=new DraggedButton[graph.getV()];
         graph.addChangeListeners((v)->updateUI());
-
-        //setBackground(new Color(1023));
+        setBackground(Color.WHITE);
         setLayout(null);
-
         ComponentListener buttonMoveListener=new ComponentAdapter(){
             @Override
             public void componentMoved(ComponentEvent e) {
@@ -32,6 +26,7 @@ public class DraggedPanel extends JPanel {
             }
         };
 
+        buttons=new DraggedButton[graph.getV()];
         for(int i=0;i<graph.getV();i++){
             buttons[i]=new DraggedButton();
             buttons[i].addComponentListener(buttonMoveListener);
@@ -40,6 +35,7 @@ public class DraggedPanel extends JPanel {
             buttons[i].setText(new String(c));
             add(buttons[i]);
         }
+        setButtonListeners();
     }
 
     public void fixButtons(boolean isFixed){
@@ -47,7 +43,11 @@ public class DraggedPanel extends JPanel {
         for(DraggedButton db:buttons)db.fixButton(isFixed);
     }
 
-    public void addEdgeAddListener(BiConsumer<Integer,Integer> listener){
+    public void setEdgeListener(BiConsumer<Integer,Integer> listener){
+        edgeListener=listener;
+    }
+
+    private void setButtonListeners(){
         final int[] dowend = {-1};
         final int[] entered = {-1};
         for(int i=0;i<graph.getV();i++){
@@ -63,7 +63,7 @@ public class DraggedPanel extends JPanel {
                 @Override
                 public void mouseReleased(MouseEvent mouseEvent) {
                     if(!fixed)return;
-                    if(entered[0] !=-1&& dowend[0] != entered[0])listener.accept(dowend[0],entered[0]);
+                    if(entered[0] !=-1&& dowend[0] != entered[0])onEdgeAdded(dowend[0],entered[0]);
                     dowend[0] =-1;
                     needDraw=false;
                     updateUI();
@@ -94,84 +94,37 @@ public class DraggedPanel extends JPanel {
                 }
 
                 @Override
-                public void mouseMoved(MouseEvent mouseEvent) {
-
-                }
+                public void mouseMoved(MouseEvent mouseEvent) { }
             });
         }
     }
 
+    private void onEdgeAdded(int i, int j){
+        if(edgeListener!=null)edgeListener.accept(i,j);
+    }
+
     private void setBoundsToButtons(int i){
         DraggedButton b = buttons[i];
-        if(i<6)b.setBounds(i*70+50,50,50,50);
-        else b.setBounds((i-6)*70+50,150,50,50);
+        if(i<6)b.setBounds(i*70+SIZE_OF_BUTTON,SIZE_OF_BUTTON,SIZE_OF_BUTTON,SIZE_OF_BUTTON);
+        else b.setBounds((i-6)*70+SIZE_OF_BUTTON,150,SIZE_OF_BUTTON,SIZE_OF_BUTTON);
     }
-    private Point [] getPath(int i,int j) {
-        DraggedButton a=buttons[i];
-        DraggedButton b=buttons[j];
 
-        if(graph.getEdgeWeigth(j,i)==0){
-          return new Point[]{new Point(a.getCenter().x,a.getCenter().y),
-                    new Point(b.getCenter().x,b.getCenter().y)};
-        } else
-        if(graph.getEdgeWeigth(j,i)<graph.getEdgeWeigth(i,j) || (graph.getEdgeWeigth(j,i)==graph.getEdgeWeigth(i,j) &&i>j)){
-            if(Math.abs((b.getCenter().y)-a.getCenter().y)< SIZE_OF_BUTTON/2){
-                return new Point[] {new Point(a.getCenter().x+SIZE_OF_BUTTON/2,a.getCenter().y+SIZE_OF_BUTTON/6),
-                        new Point(b.getCenter().x+SIZE_OF_BUTTON/2,b.getCenter().y+SIZE_OF_BUTTON/6)};
-            } else
-                return new Point[]{new Point(a.getCenter().x+SIZE_OF_BUTTON/2,a.getCenter().y),
-                        new Point(b.getCenter().x+SIZE_OF_BUTTON/2,b.getCenter().y)};
-        }
-        else {
-            if(Math.abs(b.getCenter().y-a.getCenter().y)< SIZE_OF_BUTTON/2){
-                return new Point[] {new Point(a.getCenter().x-SIZE_OF_BUTTON/2,a.getCenter().y-SIZE_OF_BUTTON/6),
-                        new Point(b.getCenter().x-SIZE_OF_BUTTON/2,b.getCenter().y-SIZE_OF_BUTTON/6)};
-            } else
-               return new Point[] {new Point(a.getCenter().x - SIZE_OF_BUTTON / 2, a.getCenter().y),
-                        new Point(b.getCenter().x - SIZE_OF_BUTTON / 2, b.getCenter().y )};
-        }
-    }
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         for(int i=0;i<graph.getV();i++){
-            for(int j=0;j<graph.getV();j++){
-                if(graph.getEdgeWeigth(i,j)==0)continue;
-                Point [] points = getPath(i,j);
-                drawStrelka(g,points[0],points[1],graph.getEdgeWeigth(i,j));
+            for(int j=i;j<graph.getV();j++){
+                Point a=buttons[i].getCenter();
+                Point b=buttons[j].getCenter();
+                int wab=graph.getEdgeWeigth(i,j);
+                int wba=graph.getEdgeWeigth(j,i);
+                if(wab!=0&&wba!=0) Arrows.drawParallelArrows(g,a,b,wab,wba);
+                else if(wab!=0) Arrows.drawConnectedArrow(g,a,b,wab);
+                     else if(wba!=0) Arrows.drawConnectedArrow(g,b,a,wba);
             }
         }
 
-        if(!needDraw)return;
-        drawStrelka(g,new Point(line[0],line[1]),new Point(line[2],line[3]),null);
-    }
-
-
-
-    private void drawStrelka(Graphics g, Point start, Point finish, Integer weight){
-        if(start.equals(finish))return;
-        g.setColor(Color.GREEN);
-        g.drawLine(start.x,start.y,finish.x,finish.y);
-        //
-        int tx = finish.x;
-        int ty = finish.y;
-        finish.x = (start.x+finish.x)/2;
-        finish.y = (start.y+finish.y)/2;
-        final double size= 30;
-        final double norm=sqrt(pow(start.x-finish.x,2)+pow(start.y-finish.y,2));
-        Point startFictive=new Point((int)((start.x-finish.x)/norm*size)+finish.x,((int)((start.y-finish.y)/norm*size))+finish.y);
-        Point center=new Point((startFictive.x+finish.x)/2,(startFictive.y+finish.y)/2);
-        Point finishTranslated=new Point(finish.x-center.x,finish.y-center.y);
-        Point rp=new Point(finishTranslated.y,-finishTranslated.x);
-        Point lp=new Point(-rp.x,-rp.y);
-        Point lpTranslated=new Point(lp.x+center.x,lp.y+center.y);
-        Point rpTranslated=new Point(rp.x+center.x,rp.y+center.y);
-        //g.drawLine(lpTranslated.x,lpTranslated.y,rpTranslated.x,rpTranslated.y);
-        g.drawLine(lpTranslated.x,lpTranslated.y,finish.x,finish.y);
-        g.drawLine(rpTranslated.x,rpTranslated.y,finish.x,finish.y);
-        if(weight==null)return;
-        g.setColor(Color.BLUE);
-        g.drawString(weight.toString(),(start.x+tx)/2,(start.y+ty)/2);
+        if(needDraw) Arrows.drawFloatingArrow(g,new Point(line[0],line[1]),new Point(line[2],line[3]));
     }
 }

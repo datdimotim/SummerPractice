@@ -66,11 +66,10 @@ public class Main extends JFrame {
         panelForMatr.newGraph(graph);
         panel.setPreferredSize(new Dimension(600, 700));
         add(panel, BorderLayout.WEST);
-        panel.addEdgeAddListener((i, j) -> {
-            Integer weight = New.ask(1, 10000, "Choose weight of edge");
+        panel.setEdgeListener((i, j) -> {
+            Integer weight = New.ask(1, 99, "Choose weight of edge");
             if (weight == null) return;
             graph.setEggeWeight(i, j, weight);
-            //labels[i][j].setText(weight.toString());
         });
     }
     public static void main(String[] args) {
