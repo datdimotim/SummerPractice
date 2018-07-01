@@ -61,7 +61,7 @@ public class Arrows {
         );
         g.fillPolygon(polygon);
         if(weight==null)return;
-        g.setColor(Color.BLUE);
+        g.setColor(Color.orange);
         g.drawString(weight.toString(),(start.x+finish.x)/2,(start.y+finish.y)/2);
     }
 

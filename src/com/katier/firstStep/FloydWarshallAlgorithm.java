@@ -50,9 +50,9 @@ public class FloydWarshallAlgorithm{
                     }
                     if(m[j][i].weight+m[i][k].weight<(m[j][k].weight==0?Integer.MAX_VALUE:m[j][k].weight)){
                         m[j][k]=new Graph.Cell(m[j][i].weight+m[i][k].weight,i);
-                        if(steps==0)es[j][k]= Graph.EdgeState.WIN;
+                        if(steps==0)es[j][k]= Graph.EdgeState.LOSE;
                     }
-                    else if(steps==0)es[j][k]= Graph.EdgeState.LOSE;
+                    else if(steps==0)es[j][k]= Graph.EdgeState.WIN;
 
                 }
             }

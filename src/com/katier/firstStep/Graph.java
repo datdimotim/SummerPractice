@@ -73,7 +73,7 @@ public class Graph{
         NORMAL {
             @Override
             public int getColor() {
-                return Color.GREEN.getRGB();
+                return Color.BLACK.getRGB();
             }
         },SELECTED {
             @Override
@@ -83,12 +83,12 @@ public class Graph{
         },WIN {
             @Override
             public int getColor() {
-                return Color.YELLOW.getRGB();
+                return Color.GREEN.getRGB();
             }
         },LOSE {
             @Override
             public int getColor() {
-                return Color.BLUE.getRGB();
+                return Color.GRAY.getRGB();
             }
         };
         public abstract int getColor();
@@ -98,7 +98,7 @@ public class Graph{
         NORMAL {
             @Override
             public int getColor() {
-                return Color.GREEN.getRGB();
+                return Color.BLACK.getRGB();
             }
         },ACTIVE {
             @Override
