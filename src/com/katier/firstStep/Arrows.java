@@ -13,12 +13,12 @@ public class Arrows {
         return new Point((int)((finish.x-start.x)*p+start.x),(int)((finish.y-start.y)*p+start.y));
     }
 
-    public static void drawConnectedArrow(Graphics g, Point start, Point finish, int weight){
-        drawArrow(g,start,moveFinishPoint(start,finish),weight);
+    public static void drawConnectedArrow(Graphics g, Point start, Point finish, int weight, int color){
+        drawArrow(g,start,moveFinishPoint(start,finish),weight, color);
     }
 
     public static void drawFloatingArrow(Graphics g, Point start, Point finish){
-        drawArrow(g,start,finish,null);
+        drawArrow(g,start,finish,null,Color.GREEN.getRGB());
     }
 
     private static Point[] getOrtohonalLine(Point start, Point finish){
@@ -32,18 +32,18 @@ public class Arrows {
         return new Point[]{outL,outR};
     }
 
-    public static void drawParallelArrows(Graphics g, Point a, Point b, int abWeight, int baWeight){
+    public static void drawParallelArrows(Graphics g, Point a, Point b, int abWeight, int baWeight, int abColor, int baColor){
         Point[] ob=getOrtohonalLine(a,b);
         Point[] oa=getOrtohonalLine(b,a);
-        drawConnectedArrow(g,oa[0],ob[1],abWeight);
-        drawConnectedArrow(g,ob[0],oa[1],baWeight);
+        drawConnectedArrow(g,oa[0],ob[1],abWeight,abColor);
+        drawConnectedArrow(g,ob[0],oa[1],baWeight,baColor);
     }
 
-    private static void drawArrow(Graphics g, Point start, Point finish, Integer weight){
+    private static void drawArrow(Graphics g, Point start, Point finish, Integer weight, int color){
         if(start.equals(finish))return;
         ((Graphics2D)g).setStroke(new BasicStroke(2));
         g.setFont(new Font(Font.SANS_SERIF,Font.BOLD,18));
-        g.setColor(Color.GREEN);
+        g.setColor(new Color(color));
         g.drawLine(start.x,start.y,finish.x,finish.y);
         final double size= 30;
         final double norm=norm(start,finish);

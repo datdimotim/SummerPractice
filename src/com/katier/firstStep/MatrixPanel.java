@@ -7,7 +7,7 @@ public class MatrixPanel extends JPanel {
     public static final int SIZE=50;
     private JLabel[][] labels;
     private Graph graph;
-    MatrixPanel(){
+    public MatrixPanel(){
         setBackground(Color.WHITE);
         setPreferredSize(new Dimension(SIZE*14, SIZE*14));
         setLayout(new GridLayout(2, 2));
@@ -51,11 +51,17 @@ public class MatrixPanel extends JPanel {
         String s="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         for (int i = 0; i < graph.getV(); i++)
             for (int j = 0; j < graph.getV(); j++) {
-                if(0 == graph.getMatrixCell(i,j).weight) continue;
-                labels[i][j].setText(
-                        Integer.toString(graph.getMatrixCell(i, j).weight) + "/"
-                                +s.charAt(graph.getMatrixCell(i,j).prev)
-                );
+                if(0 == graph.getMatrixCell(i,j).weight){
+                    labels[i][j].setForeground(Color.BLACK);
+                    labels[i][j].setText("∞");
+                }
+                else {
+                    labels[i][j].setForeground(new Color(graph.getEdgeState(i,j).getColor()));
+                    labels[i][j].setText(
+                            Integer.toString(graph.getMatrixCell(i, j).weight) + "/"
+                                    +s.charAt(graph.getMatrixCell(i,j).prev)
+                    );
+                }
             }
         }
     }

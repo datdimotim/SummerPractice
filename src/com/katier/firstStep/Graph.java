@@ -2,6 +2,7 @@ package com.katier.firstStep;
 
 import com.sun.istack.internal.NotNull;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
@@ -9,8 +10,8 @@ public class Graph{
     private final int V;
     private final int[][] weights;
 
-    private final EdgeState[][] edges;
-    private final VertexState[] vertexes;
+    private EdgeState[][] edges;
+    private VertexState[] vertexes;
     private Cell[][] m;
     private @NotNull ArrayList< Consumer<Void>> changeListeners =new ArrayList<>();
     public Graph(int v) {
@@ -48,6 +49,8 @@ public class Graph{
     public boolean setStepOfAlgorithm(int step){
         FloydWarshallAlgorithm.Result r=FloydWarshallAlgorithm.run(weights,step);
         m=r.m;
+        edges=r.es;
+        vertexes=r.vs;
         notifyListeners();
         return r.hasNext;
     }
@@ -67,11 +70,53 @@ public class Graph{
     }
 
     public enum EdgeState{
-        NORMAL,SELECTED,WIN,LOSE
+        NORMAL {
+            @Override
+            public int getColor() {
+                return Color.GREEN.getRGB();
+            }
+        },SELECTED {
+            @Override
+            public int getColor() {
+                return Color.RED.getRGB();
+            }
+        },WIN {
+            @Override
+            public int getColor() {
+                return Color.YELLOW.getRGB();
+            }
+        },LOSE {
+            @Override
+            public int getColor() {
+                return Color.BLUE.getRGB();
+            }
+        };
+        public abstract int getColor();
     }
 
     public enum VertexState{
-        NORMAL,ACTIVE,PROCESSED,NEIGHBOR
+        NORMAL {
+            @Override
+            public int getColor() {
+                return Color.GREEN.getRGB();
+            }
+        },ACTIVE {
+            @Override
+            public int getColor() {
+                return Color.RED.getRGB();
+            }
+        },PROCESSED {
+            @Override
+            public int getColor() {
+                return Color.YELLOW.getRGB();
+            }
+        },NEIGHBOR {
+            @Override
+            public int getColor() {
+                return Color.BLUE.getRGB();
+            }
+        };
+        public abstract int getColor();
     }
     public static class Cell{
         public final int weight;

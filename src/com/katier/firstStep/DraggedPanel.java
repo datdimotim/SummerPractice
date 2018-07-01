@@ -126,9 +126,11 @@ public class DraggedPanel extends JPanel {
                 Point b=buttons[j].getCenter();
                 int wab=graph.getEdgeWeight(i,j);
                 int wba=graph.getEdgeWeight(j,i);
-                if(wab!=0&&wba!=0) Arrows.drawParallelArrows(g,a,b,wab,wba);
-                else if(wab!=0) Arrows.drawConnectedArrow(g,a,b,wab);
-                     else if(wba!=0) Arrows.drawConnectedArrow(g,b,a,wba);
+                int abColor=graph.getEdgeState(i,j).getColor();
+                int baColor=graph.getEdgeState(j,i).getColor();
+                if(wab!=0&&wba!=0) Arrows.drawParallelArrows(g,a,b,wab,wba,abColor,baColor);
+                else if(wab!=0) Arrows.drawConnectedArrow(g,a,b,wab,abColor);
+                     else if(wba!=0) Arrows.drawConnectedArrow(g,b,a,wba,baColor);
             }
         }
 
