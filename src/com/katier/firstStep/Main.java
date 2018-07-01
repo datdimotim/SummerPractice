@@ -4,9 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Main extends JFrame {
-    private Graph graph = new Graph(new int[0][0]);
+    private Graph graph = new Graph(0);
     private final MatrixPanel panelForMatr = new MatrixPanel();
     private final DraggedPanel panel = new DraggedPanel();
+    private int step=0;
 
     private Main() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -14,18 +15,44 @@ public class Main extends JFrame {
         initMenu();
 
         setLayout(new BorderLayout());
+
+        panel.setEdgeListener((i, j) -> {
+            Integer weight = New.ask(1, 99, "Choose weight of edge");
+            if (weight == null) return;
+            graph.setEdgeWeight(i, j, weight);
+        });
         panel.setPreferredSize(new Dimension(600, 700));
         add(panel, BorderLayout.WEST);
 
+        initButtons();
+
         initMatrix();
 
-        setSize(1200, 700);
+        pack();
+        //setSize(1200, 700);
         setVisible(true);
+    }
+
+    private void initButtons(){
+        JButton next=new JButton("next");
+        JButton back=new JButton("back");
+        next.addActionListener(e -> {
+            if(!graph.setStepOfAlgorithm(step))return;
+            step++;
+            graph.setStepOfAlgorithm(step);
+        });
+        back.addActionListener(e -> {
+            if(step==0)return;
+            step--;
+            graph.setStepOfAlgorithm(step);
+        });
+        add(next,BorderLayout.AFTER_LAST_LINE);
+        add(back,BorderLayout.BEFORE_FIRST_LINE);
     }
 
     private void initMatrix(){
         JPanel tmp = new JPanel();
-        tmp.setPreferredSize(new Dimension(400, 700));
+        tmp.setPreferredSize(new Dimension(800, 700));
         tmp.setBackground(Color.WHITE);
         tmp.add(panelForMatr);
         add(tmp, BorderLayout.EAST);
@@ -70,14 +97,10 @@ public class Main extends JFrame {
     }
 
     private void addVertexesInPanel(int vertexes) {
-        graph = new Graph(new int[vertexes][vertexes]);
+        graph = new Graph(vertexes);
+        step=0;
         panel.setGraph(graph);
         panelForMatr.setGraph(graph);
-        panel.setEdgeListener((i, j) -> {
-            Integer weight = New.ask(1, 99, "Choose weight of edge");
-            if (weight == null) return;
-            graph.setEggeWeight(i, j, weight);
-        });
     }
     public static void main(String[] args) {
         new Main();

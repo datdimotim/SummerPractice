@@ -12,7 +12,7 @@ public class DraggedPanel extends JPanel {
     private boolean needDraw=false;
     private boolean fixed=false;
     private BiConsumer<Integer,Integer> edgeListener=null;
-    private Graph graph=new Graph(new int[0][0]);
+    private Graph graph=new Graph(0);
 
     public DraggedPanel(){
         setBackground(Color.WHITE);
@@ -124,8 +124,8 @@ public class DraggedPanel extends JPanel {
             for(int j=i;j<graph.getV();j++){
                 Point a=buttons[i].getCenter();
                 Point b=buttons[j].getCenter();
-                int wab=graph.getEdgeWeigth(i,j);
-                int wba=graph.getEdgeWeigth(j,i);
+                int wab=graph.getEdgeWeight(i,j);
+                int wba=graph.getEdgeWeight(j,i);
                 if(wab!=0&&wba!=0) Arrows.drawParallelArrows(g,a,b,wab,wba);
                 else if(wab!=0) Arrows.drawConnectedArrow(g,a,b,wab);
                      else if(wba!=0) Arrows.drawConnectedArrow(g,b,a,wba);
