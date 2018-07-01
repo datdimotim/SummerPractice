@@ -6,9 +6,11 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
+import static com.sun.org.apache.xml.internal.security.keys.keyresolver.KeyResolver.length;
+
 public class Graph{
     private final int V;
-    private final int[][] weights;
+    public  int[][] weights;
 
     private EdgeState[][] edges;
     private VertexState[] vertexes;
@@ -25,7 +27,9 @@ public class Graph{
         weights=new int[V][V];
         m=FloydWarshallAlgorithm.run(weights,0).m;
     }
-
+    public void  setMatr(int matr [][]){
+         weights = Utils.deepCopy(matr);
+    }
     public int getV(){
         return V;
     }
@@ -45,8 +49,9 @@ public class Graph{
     public VertexState getVertexState(int i){
         return vertexes[i];
     }
-
+    int step=1;
     public boolean setStepOfAlgorithm(int step){
+        this.step=step;
         FloydWarshallAlgorithm.Result r=FloydWarshallAlgorithm.run(weights,step);
         m=r.m;
         edges=r.es;
@@ -78,7 +83,7 @@ public class Graph{
         },SELECTED {
             @Override
             public int getColor() {
-                return Color.RED.getRGB();
+                return Color.PINK.getRGB();
             }
         },WIN {
             @Override
@@ -88,7 +93,7 @@ public class Graph{
         },LOSE {
             @Override
             public int getColor() {
-                return Color.GRAY.getRGB();
+                return Color.RED.getRGB();
             }
         };
         public abstract int getColor();
@@ -113,7 +118,7 @@ public class Graph{
         },NEIGHBOR {
             @Override
             public int getColor() {
-                return Color.BLUE.getRGB();
+                return Color.PINK.getRGB();
             }
         };
         public abstract int getColor();

@@ -18,7 +18,7 @@ public class Arrows {
     }
 
     public static void drawFloatingArrow(Graphics g, Point start, Point finish){
-        drawArrow(g,start,finish,null,Color.GREEN.getRGB());
+        drawArrow(g,start,finish,null,Color.BLACK.getRGB());
     }
 
     private static Point[] getOrtohonalLine(Point start, Point finish){

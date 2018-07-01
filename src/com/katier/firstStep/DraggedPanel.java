@@ -47,7 +47,10 @@ public class DraggedPanel extends JPanel {
 
     public void fixButtons(boolean isFixed){
         this.fixed=isFixed;
-        for(DraggedButton db:buttons)db.fixButton(isFixed);
+        if(buttons==null)return;
+        for(DraggedButton db:buttons){
+            db.fixButton(isFixed);
+        }
     }
 
     public void setEdgeListener(BiConsumer<Integer,Integer> listener){
@@ -126,8 +129,10 @@ public class DraggedPanel extends JPanel {
                 Point b=buttons[j].getCenter();
                 int wab=graph.getEdgeWeight(i,j);
                 int wba=graph.getEdgeWeight(j,i);
-                int abColor=graph.getEdgeState(i,j).getColor();
-                int baColor=graph.getEdgeState(j,i).getColor();
+                //int abColor=graph.getEdgeState(i,j).getColor();
+                //int baColor=graph.getEdgeState(j,i).getColor();
+                int abColor=Color.BLACK.getRGB();
+                int baColor=Color.BLACK.getRGB();
                 if(wab!=0&&wba!=0) Arrows.drawParallelArrows(g,a,b,wab,wba,abColor,baColor);
                 else if(wab!=0) Arrows.drawConnectedArrow(g,a,b,wab,abColor);
                      else if(wba!=0) Arrows.drawConnectedArrow(g,b,a,wba,baColor);

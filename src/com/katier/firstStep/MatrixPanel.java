@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MatrixPanel extends JPanel {
-    public static final int SIZE=50;
+    public static final int SIZE=20;
     private JLabel[][] labels;
     private Graph graph;
     public MatrixPanel(){
@@ -13,9 +13,12 @@ public class MatrixPanel extends JPanel {
         setLayout(new GridLayout(2, 2));
         setBackground(Color.WHITE);
     }
-    public void setGraph(Graph graph) {
-        this.graph=graph;
+    public  void setListeners(){
         graph.addChangeListeners(v->onUpdate());
+    }
+    public void setGraph(Graph graph) {
+        setLayout(new BorderLayout());
+        this.graph=graph;
         int kol= graph.getV();
         labels = new JLabel[kol][kol];
         removeAll();
@@ -34,6 +37,7 @@ public class MatrixPanel extends JPanel {
             JLabel k = new JLabel(new String(c));
             k.setVerticalAlignment(SwingConstants.CENTER);
             k.setHorizontalAlignment(SwingConstants.CENTER);
+
             add(k);
 
             for (int j = 0; j < kol; j++) {
@@ -51,12 +55,21 @@ public class MatrixPanel extends JPanel {
         String s="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         for (int i = 0; i < graph.getV(); i++)
             for (int j = 0; j < graph.getV(); j++) {
+                labels[i][j].setForeground(Color.BLACK);
+                labels[i][j].setBackground(Color.WHITE);
+                //if(graph.getEdgeState(i,j) == Graph.EdgeState.SELECTED){
+                    for (int k = 0; k < graph.getV(); k++) {
+                        labels[graph.step-1][k].setOpaque(true);
+                        labels[k][graph.step-1].setOpaque(true);
+                        labels[graph.step-1][k].setBackground(new Color(Graph.EdgeState.SELECTED.getColor()));
+                        labels[k][graph.step-1].setBackground(new Color(Graph.EdgeState.SELECTED.getColor()));
+                    }
+
+               // }
                 if(0 == graph.getMatrixCell(i,j).weight){
-                    labels[i][j].setForeground(Color.BLACK);
                     labels[i][j].setText("∞");
                 }
                 else {
-                    labels[i][j].setForeground(new Color(graph.getEdgeState(i,j).getColor()));
                     labels[i][j].setText(
                             Integer.toString(graph.getMatrixCell(i, j).weight) + "/"
                                     +s.charAt(graph.getMatrixCell(i,j).prev)

@@ -45,14 +45,21 @@ public class FloydWarshallAlgorithm{
 
                     if(steps==0){
                         vs[i]= Graph.VertexState.ACTIVE;
+                        es[j][k]= Graph.EdgeState.SELECTED; //inner
                         es[j][i]= Graph.EdgeState.SELECTED;
-                        es[i][k]= Graph.EdgeState.SELECTED;
+                        es[i][k] = Graph.EdgeState.SELECTED;
                     }
                     if(m[j][i].weight+m[i][k].weight<(m[j][k].weight==0?Integer.MAX_VALUE:m[j][k].weight)){
                         m[j][k]=new Graph.Cell(m[j][i].weight+m[i][k].weight,i);
-                        if(steps==0)es[j][k]= Graph.EdgeState.LOSE;
+                            //es[j][k]= Graph.EdgeState.LOSE; //inner
+                            //es[j][i]= Graph.EdgeState.WIN;
+                            //es[i][k] = Graph.EdgeState.WIN;
                     }
-                    else if(steps==0)es[j][k]= Graph.EdgeState.WIN;
+                    else {
+                        //es[j][k]= Graph.EdgeState.WIN; //inner
+                        //es[j][i]= Graph.EdgeState.LOSE;
+                        //es[i][k] = Graph.EdgeState.LOSE;
+                    }
 
                 }
             }
