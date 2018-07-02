@@ -1,10 +1,7 @@
 package com.katier.firstStep;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
-
-import static java.lang.Math.pow;
 
 public class Main extends JFrame {
     private Graph graph = new Graph(0);
@@ -12,6 +9,7 @@ public class Main extends JFrame {
     private final MatrixPanel panelForFinalMatr = new MatrixPanel();
     private final DraggedPanel panel = new DraggedPanel();
     private int step=0;
+    JPanel tmp;
     JPanel t3 = new JPanel(new BorderLayout());
     private Main() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -45,7 +43,7 @@ public class Main extends JFrame {
         JPanel t = new JPanel();
         t.setPreferredSize(new Dimension(50,700));
         t.setBackground(Color.WHITE);
-        JPanel tmp = new JPanel();
+        tmp = new JPanel();
         tmp.setLayout(new BoxLayout(tmp,BoxLayout.Y_AXIS));
         tmp.setPreferredSize(new Dimension(600, 700));
         tmp.setBackground(Color.WHITE);
@@ -77,6 +75,10 @@ public class Main extends JFrame {
             Integer k = New.ask(2, 12, "Choose number of vertexes");
             if (k == null) return;
             int vertexes = k;
+            remove(tmp);
+            Graph g = new Graph(k);
+            panelForFinalMatr.setGraph(g);
+            initMatrix();
             addVertexesInPanel(vertexes);
         });
         moveVert.addActionListener(actionEvent -> panel.fixButtons(false));
