@@ -6,8 +6,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-import static com.sun.org.apache.xml.internal.security.keys.keyresolver.KeyResolver.length;
-
 public class Graph{
     private final int V;
     public  int[][] weights;
@@ -18,15 +16,25 @@ public class Graph{
     private @NotNull ArrayList< Consumer<Void>> changeListeners =new ArrayList<>();
     public Graph(int v) {
         V=v;
-        edges=new EdgeState[V][V];
-        for(int i=0;i<V;i++)
-            for(int j=0;j<V;j++)
-                edges[i][j]=EdgeState.NORMAL;
-        vertexes=new VertexState[V];
-        for(int i=0;i<V;i++)vertexes[i]=VertexState.NORMAL;
         weights=new int[V][V];
-        m=FloydWarshallAlgorithm.run(weights,0).m;
+        FloydWarshallAlgorithm.Result result=FloydWarshallAlgorithm.run(weights,0);
+        m=result.m;
+        edges=result.es;
+        vertexes=result.vs;
     }
+
+    public Graph getLarge(){
+        Graph g=new Graph(V+1);
+        for (int i = 0; i < V; i++) {
+            System.arraycopy(weights[i], 0, g.weights[i], 0, V);
+        }
+        FloydWarshallAlgorithm.Result res=FloydWarshallAlgorithm.run(g.weights,0);
+        g.m=res.m;
+        g.vertexes=res.vs;
+        g.edges=res.es;
+        return g;
+    }
+
     public void  setMatr(int matr [][]){
          weights = Utils.deepCopy(matr);
     }
@@ -49,9 +57,8 @@ public class Graph{
     public VertexState getVertexState(int i){
         return vertexes[i];
     }
-    int step=1;
+
     public boolean setStepOfAlgorithm(int step){
-        this.step=step;
         FloydWarshallAlgorithm.Result r=FloydWarshallAlgorithm.run(weights,step);
         m=r.m;
         edges=r.es;

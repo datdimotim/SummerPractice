@@ -31,8 +31,8 @@ public class Main extends JFrame {
 
         initMatrix();
 
+        setResizable(false);
         pack();
-        //setSize(1200, 700);
         setVisible(true);
     }
 
@@ -62,15 +62,15 @@ public class Main extends JFrame {
         tmp.add(t2);
         add(t,BorderLayout.EAST);
         add(tmp);
-        //setLayout(new BorderLayout());
     }
 
     private void initMenu(){
         JMenuBar jToolBar = new JMenuBar();
         JMenu modifyTree = new JMenu("Modify tree");
-        JMenuItem newTree = new JMenuItem("New Tree");
+        JMenuItem newTree = new JMenuItem("New Graph");
         JMenuItem addEdges = new JMenuItem("Add Edges");
         JMenuItem moveVert = new JMenuItem("Move Vertexes");
+        JMenuItem addVert = new JMenuItem("Add Vertex");
         newTree.addActionListener(actionEvent -> {
             Integer k = New.ask(2, 12, "Choose number of vertexes");
             if (k == null) return;
@@ -83,6 +83,19 @@ public class Main extends JFrame {
         });
         moveVert.addActionListener(actionEvent -> panel.fixButtons(false));
         addEdges.addActionListener(actionEvent -> panel.fixButtons(true));
+        addVert.addActionListener(actionEvent->{
+            if(graph.getV()==0)return;
+            if(graph.getV()==12){
+                JOptionPane.showMessageDialog(null,"Too many vertexes");
+                return;
+            }
+            graph=graph.getLarge();
+            step=0;
+            panelForMatr.setGraph(graph);
+            panel.setGraph(graph);
+            Graph g = new Graph(graph.getV());
+            panelForFinalMatr.setGraph(g);
+        });
         JMenu solution = new JMenu("Solution");
         JMenuItem solve = new JMenuItem("Solve");
         JMenuItem next = new JMenuItem("Next");
@@ -97,15 +110,11 @@ public class Main extends JFrame {
 
         });
         next.addActionListener(actionEvent -> {
-            //next in Array
             if(!graph.setStepOfAlgorithm(step))return;
-            //if(step==graph.getV()+1)return;
             step++;
-            System.out.println(step);
             graph.setStepOfAlgorithm(step);
         });
         back.addActionListener(actionEvent -> {
-            //back in Array
             if(step==0)return;
             step--;
             graph.setStepOfAlgorithm(step);
@@ -117,6 +126,7 @@ public class Main extends JFrame {
         jToolBar.add(solution);
         modifyTree.add(newTree);
         modifyTree.add(addEdges);
+        modifyTree.add(addVert);
         modifyTree.add(moveVert);
         setJMenuBar(jToolBar);
     }
@@ -126,8 +136,6 @@ public class Main extends JFrame {
         step=0;
         panel.setGraph(graph);
         panelForMatr.setGraph(graph);
-        ///panelForMatr.setListeners();
-        //panelForFinalMatr.setGraph(graph);
         JLabel label = new JLabel("Final Matrix:");
         label.setPreferredSize(new Dimension(100, 20));
         label.setForeground(Color.BLUE);
