@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.function.BiConsumer;
+import static java.lang.Math.PI;
 
 public class DraggedPanel extends JPanel {
     public static final int SIZE_OF_BUTTON=50;
@@ -115,8 +116,16 @@ public class DraggedPanel extends JPanel {
 
     private void setBoundsToButtons(int i){
         DraggedButton b = buttons[i];
-        if(i<6)b.setBounds(i*70+SIZE_OF_BUTTON,SIZE_OF_BUTTON,SIZE_OF_BUTTON,SIZE_OF_BUTTON);
-        else b.setBounds((i-6)*70+SIZE_OF_BUTTON,150,SIZE_OF_BUTTON,SIZE_OF_BUTTON);
+        Dimension size=getSize();
+        Point center=new Point(size.width/2-SIZE_OF_BUTTON/2,size.height/2-SIZE_OF_BUTTON/2);
+        final int n=buttons.length;
+        final int r=8*(center.x<center.y?center.x:center.y)/10;
+
+        b.setBounds(
+                -(int)(Math.cos(PI/2-2*PI*i/n)*r)+center.x,
+                -(int)(Math.sin(PI/2-2*PI*i/n)*r)+center.y,
+                SIZE_OF_BUTTON, SIZE_OF_BUTTON
+        );
     }
 
     @Override

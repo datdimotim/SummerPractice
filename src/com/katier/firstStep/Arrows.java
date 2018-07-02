@@ -1,6 +1,7 @@
 package com.katier.firstStep;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -61,8 +62,18 @@ public class Arrows {
         );
         g.fillPolygon(polygon);
         if(weight==null)return;
-        g.setColor(Color.orange);
-        g.drawString(weight.toString(),(start.x+finish.x)/2,(start.y+finish.y)/2);
+        drawTitle(g,weight,(start.x+finish.x)/2,(start.y+finish.y)/2);
+    }
+
+    private static void drawTitle(Graphics g,int title, int x,int y){
+        g.setColor(Color.WHITE);
+        FontMetrics fm=g.getFontMetrics();
+        Rectangle2D r=fm.getStringBounds(Integer.toString(title),g);
+        x-=(int)r.getWidth()/2;
+        y+=fm.getAscent()/2;
+        g.fillRect(x-1,y-fm.getAscent()-1,(int)r.getWidth()+2,(int)r.getHeight()+2);
+        g.setColor(Color.BLACK);
+        g.drawString(Integer.toString(title),x,y);
     }
 
     private static double norm(Point a, Point b){
