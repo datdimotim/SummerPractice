@@ -91,20 +91,20 @@ public class Main extends JFrame {
            panelForFinalMatr.setGraph(g);
            panelForFinalMatr.setListeners();
             g.setMatr(graph.weights);
-           g.setStepOfAlgorithm(g.getV());
+           g.setStepOfAlgorithm(g.getV()*g.getV()*g.getV()-1);
 
         });
         next.addActionListener(actionEvent -> {
             //next in Array
-            //if(!graph.setStepOfAlgorithm(step))return;
-            if(step==graph.getV())return;
+            if(!graph.setStepOfAlgorithm(step))return;
+            //if(step==graph.getV()+1)return;
             step++;
             System.out.println(step);
             graph.setStepOfAlgorithm(step);
         });
         back.addActionListener(actionEvent -> {
             //back in Array
-            if(step==1)return;
+            if(step==0)return;
             step--;
             graph.setStepOfAlgorithm(step);
         });
@@ -121,10 +121,10 @@ public class Main extends JFrame {
 
     private void addVertexesInPanel(int vertexes) {
         graph = new Graph(vertexes);
-        step=1;
+        step=0;
         panel.setGraph(graph);
         panelForMatr.setGraph(graph);
-        panelForMatr.setListeners();
+        ///panelForMatr.setListeners();
         panelForFinalMatr.setGraph(graph);
         JLabel label = new JLabel("Final Matrix:");
         label.setPreferredSize(new Dimension(100, 20));

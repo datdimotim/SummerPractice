@@ -19,6 +19,7 @@ public class MatrixPanel extends JPanel {
     public void setGraph(Graph graph) {
         setLayout(new BorderLayout());
         this.graph=graph;
+        graph.addChangeListeners(v->onUpdate());
         int kol= graph.getV();
         labels = new JLabel[kol][kol];
         removeAll();
@@ -52,20 +53,23 @@ public class MatrixPanel extends JPanel {
         onUpdate();
     }
     private void onUpdate(){
+        int d = 0;
         String s="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         for (int i = 0; i < graph.getV(); i++)
             for (int j = 0; j < graph.getV(); j++) {
                 labels[i][j].setForeground(Color.BLACK);
                 labels[i][j].setBackground(Color.WHITE);
-                //if(graph.getEdgeState(i,j) == Graph.EdgeState.SELECTED){
+
+                if(graph.getVertexState(j) == Graph.VertexState.ACTIVE){
+                    d = j;
                     for (int k = 0; k < graph.getV(); k++) {
-                        labels[graph.step-1][k].setOpaque(true);
-                        labels[k][graph.step-1].setOpaque(true);
-                        labels[graph.step-1][k].setBackground(new Color(Graph.EdgeState.SELECTED.getColor()));
-                        labels[k][graph.step-1].setBackground(new Color(Graph.EdgeState.SELECTED.getColor()));
+                        labels[d][k].setOpaque(true);
+                        labels[k][d].setOpaque(true);
+                        labels[d][k].setBackground(new Color(Graph.EdgeState.SELECTED.getColor()));
+                        labels[k][d].setBackground(new Color(Graph.EdgeState.SELECTED.getColor()));
                     }
 
-               // }
+                }
                 if(0 == graph.getMatrixCell(i,j).weight){
                     labels[i][j].setText("∞");
                 }
