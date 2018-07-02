@@ -14,7 +14,7 @@ public class Graph{
 
     private EdgeState[][] edges;
     private VertexState[] vertexes;
-    private Cell[][] m;
+    public Cell[][] m;
     private @NotNull ArrayList< Consumer<Void>> changeListeners =new ArrayList<>();
     public Graph(int v) {
         V=v;
@@ -94,6 +94,12 @@ public class Graph{
             @Override
             public int getColor() {
                 return Color.RED.getRGB();
+            }
+        }
+        ,TMP {
+            @Override
+            public int getColor() {
+                return Color.GRAY.getRGB();
             }
         };
         public abstract int getColor();

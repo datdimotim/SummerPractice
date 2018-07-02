@@ -125,7 +125,7 @@ public class Main extends JFrame {
         panel.setGraph(graph);
         panelForMatr.setGraph(graph);
         ///panelForMatr.setListeners();
-        panelForFinalMatr.setGraph(graph);
+        //panelForFinalMatr.setGraph(graph);
         JLabel label = new JLabel("Final Matrix:");
         label.setPreferredSize(new Dimension(100, 20));
         label.setForeground(Color.BLUE);
