@@ -22,6 +22,10 @@ public class Main extends JFrame {
             Integer weight = New.ask(1, 99, "Choose weight of edge");
             if (weight == null) return;
             graph.setEdgeWeight(i, j, weight);
+
+            Graph g = new Graph(graph.getV());
+            panelForFinalMatr.setGraph(g);
+            g.setStepOfAlgorithm(-1);
         });
         panel.setPreferredSize(new Dimension(600, 700));
         panel.setBorder(BorderFactory.createMatteBorder(0,0,0,1,Color.BLACK));
@@ -95,6 +99,7 @@ public class Main extends JFrame {
             panel.setGraph(graph);
             Graph g = new Graph(graph.getV());
             panelForFinalMatr.setGraph(g);
+            g.setStepOfAlgorithm(-1);
         });
         JMenu solution = new JMenu("Solution");
         JMenuItem solve = new JMenuItem("Solve");
@@ -110,12 +115,18 @@ public class Main extends JFrame {
 
         });
         next.addActionListener(actionEvent -> {
-            if(!graph.setStepOfAlgorithm(step))return;
+            if(!graph.setStepOfAlgorithm(step)){
+                JOptionPane.showMessageDialog(null,"This is already last step");
+                return;
+            }
             step++;
             graph.setStepOfAlgorithm(step);
         });
         back.addActionListener(actionEvent -> {
-            if(step==0)return;
+            if(step==0){
+                JOptionPane.showMessageDialog(null,"This is already 0 step");
+                return;
+            }
             step--;
             graph.setStepOfAlgorithm(step);
         });
